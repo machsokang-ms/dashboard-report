@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Digital Summary Report</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Inter:wght@400;500;600;700&family=Kantumruy+Pro:wght@400;600&family=Moul&family=Suwannaphum:wght@400;700&family=Preahvihear&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        #loginSection {
+            background: var(--bg-card-dark);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            max-width: 400px;
+            margin: 100px auto;
+            text-align: center;
+        }
+        #loginSection input {
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 16px;
+        }
+        #adminDashboard {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        .edit-btn {
+            position: absolute;
+            top: 10px;
+            right: 45px;
+            background: var(--color-blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- LOGIN SECTION -->
+        <div id="loginSection">
+            <h2>Admin Login</h2>
+            <br>
+            <input type="password" id="adminPassword" placeholder="Admin Password...">
+            <button class="btn-primary" onclick="login()">ចូល (Login)</button>
+            <br><br><a href="/" style="color: var(--color-blue); text-decoration: none;">ត្រឡប់ក្រោយ (Back to Public)</a>
+        </div>
+
+        <!-- ADMIN DASHBOARD -->
+        <div id="adminDashboard">
+            <div class="admin-header">
+                <h2>គ្រប់គ្រងថ្នាលរបាយការណ៍ (Manage Platforms)</h2>
+                <div>
+                    <button class="btn-primary" onclick="openSettingsModal()" style="background: #6c757d; margin-right: 10px;">⚙️ កែប្រែ Header</button>
+                    <button class="btn-primary" onclick="openModal()">+ បន្ថែមថ្នាលថ្មី</button>
+                    <button class="btn-primary" onclick="logout()" style="background: #dc3545; margin-left: 10px;">ចាកចេញ</button>
+                </div>
+            </div>
+            
+            <main class="dashboard-grid" id="admin-grid">
+                <!-- Admin view cards injected here -->
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer" id="appFooter"></footer>
+
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>ការកំណត់ទូទៅ (Global Settings)</h2>
+                <span class="close-modal" onclick="closeSettingsModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>រូបសញ្ញា (Upload Logo)</label>
+                    <input type="file" id="setLogoFile" accept="image/png, image/jpeg, image/svg+xml">
+                    <small style="opacity:0.7">ទំហំមិនឲ្យលើសពី 5MB</small>
+                    <input type="hidden" id="setLogoData">
+                    <img id="logoPreview" src="" style="max-height: 40px; margin-top: 10px; display: none;">
+                </div>
+                <div class="form-group">
+                    <label for="setMainTitle">ចំណងជើងធំ (Main Title)</label>
+                    <input type="text" id="setMainTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="setSubTitle">ចំណងជើងរង (Sub Title)</label>
+                    <input type="text" id="setSubTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="setWelcomeText">អត្ថបទស្វាគមន៍ (Welcome Text)</label>
+                    <input type="text" id="setWelcomeText" required>
+                </div>
+                <div class="form-group">
+                    <label for="setFontFamily">ម៉ូដអក្សរ (Font Style)</label>
+                    <select id="setFontFamily">
+                        <option value="'Battambang', 'Inter', sans-serif">ដំបូង (Battambang)</option>
+                        <option value="'Kantumruy Pro', sans-serif">ទំនើប (Kantumruy Pro)</option>
+                        <option value="'Moul', cursive">ចំណងជើង (Moul)</option>
+                        <option value="'Suwannaphum', serif">ផ្លូវការ (Suwannaphum)</option>
+                        <option value="'Preahvihear', sans-serif">ក្បាច់ (Preahvihear)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ទំហំរូបសញ្ញា (Logo Size: px)</label>
+                    <input type="range" id="setLogoSize" min="40" max="250" value="80">
+                </div>
+                <div class="form-group">
+                    <label>ទំហំចំណងជើងធំ (Main Title Size: rem)</label>
+                    <input type="range" id="setMainTitleSize" min="1" max="4" step="0.1" value="1.8">
+                </div>
+                <div class="form-group">
+                    <label>ទំហំចំណងជើងរង (Sub Title Size: rem)</label>
+                    <input type="range" id="setSubTitleSize" min="0.8" max="3" step="0.1" value="1.5">
+                </div>
+                <div class="form-group">
+                    <label>អត្ថបទខាងក្រោម (Footer Text)</label>
+                    <input type="text" id="setFooterText">
+                </div>
+                <button class="btn-primary" onclick="saveSettings()">រក្សាទុកការកំណត់</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Platform Modal -->
+    <div id="addPlatformModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">បន្ថែមថ្នាលថ្មី</h2>
+                <span class="close-modal" id="closeModalBtn" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="platformId">
+                <div class="form-group">
+                    <label for="platformName">ឈ្មោះថ្នាល (Name)</label>
+                    <input type="text" id="platformName" placeholder="ឧ. កម្មវិធីថ្មី..." required>
+                </div>
+                <div class="form-group">
+                    <label for="platformUrl">តំណភ្ជាប់ (URL)</label>
+                    <input type="url" id="platformUrl" placeholder="https://..." value="#">
+                </div>
+                <div class="form-group">
+                    <label for="platformDesc">ការពិពណ៌នា (Description)</label>
+                    <textarea id="platformDesc" rows="3" placeholder="ពិពណ៌នាអំពីថ្នាលតូចៗ..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="platformColor">ពណ៌ (Theme Color)</label>
+                    <select id="platformColor">
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                        <option value="orange">Orange</option>
+                        <option value="purple">Purple</option>
+                        <option value="pink">Pink</option>
+                        <option value="teal">Teal</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="platformIcon">រូបតំណាង (Material Icon Name)</label>
+                    <select id="platformIcon">
+                        <!-- Dashboard & Reporting Icons -->
+                        <option value="bar_chart">Bar Chart (របាយការណ៍)</option>
+                        <option value="pie_chart">Pie Chart (ក្រាហ្វិក)</option>
+                        <option value="monitoring">Monitoring (តាមដាន)</option>
+                        <option value="analytics">Analytics (វិភាគទិន្នន័យ)</option>
+                        <option value="query_stats">Query Stats (ស្ថិតិ)</option>
+                        <option value="insert_chart">Insert Chart (បញ្ចូលក្រាហ្វិក)</option>
+                        <option value="show_chart">Show Chart (បង្ហាញក្រាហ្វិក)</option>
+                        <option value="dashboard">Dashboard (ផ្ទាំងគ្រប់គ្រង)</option>
+                        <option value="view_list">View List (មើលបញ្ជី)</option>
+                        
+                        <!-- Education & Learning Icons -->
+                        <option value="school">School (សាលារៀន)</option>
+                        <option value="menu_book">Menu Book (សៀវភៅ)</option>
+                        <option value="library_books">Library Books (បណ្ណាល័យ)</option>
+                        <option value="cast_for_education">Cast for Education (អប់រំ)</option>
+                        <option value="quiz">Quiz (សំណួរចម្លើយ)</option>
+                        <option value="science">Science (វិទ្យាសាស្ត្រ)</option>
+
+                        <!-- Office & Document Icons -->
+                        <option value="description">Description (ឯកសារ)</option>
+                        <option value="assignment">Assignment (កិច្ចការ)</option>
+                        <option value="summarize">Summarize (សេចក្តីសង្ខេប)</option>
+                        <option value="folder">Folder (ថតឯកសារ)</option>
+                        <option value="article">Article (អត្ថបទ)</option>
+
+                        <!-- Systems & General Apps -->
+                        <option value="apps">Apps (កម្មវិធីទូទៅ)</option>
+                        <option value="account_balance">Account Balance (ស្ថាប័ន)</option>
+                        <option value="manage_accounts">Manage Accounts (គណនី)</option>
+                        <option value="database">Database (ទិន្នន័យ)</option>
+                        <option value="computer">Computer (កុំព្យូទ័រ)</option>
+                        <option value="settings">Settings (ការកំណត់)</option>
+                        <option value="public">Public (សកល/បណ្តាញ)</option>
+                        <option value="language">Language (ភាសា/អន្តរជាតិ)</option>
+                        <option value="group">Group (ក្រុមមនុស្ស)</option>
+                        <option value="event">Event (ព្រឹត្តិការណ៍)</option>
+                    </select>
+                </div>
+                <button id="savePlatformBtn" class="btn-primary" onclick="addPlatform()">រក្សាទុក</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
