@@ -1,7 +1,0 @@
-node_modules
-npm-debug.log
-.env
-db.json
-settings.json
-.git
-.gitignore
