@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  dashboard-server:
+    build: .
+    container_name: dashboard-report
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    volumes:
+      # Data Persistence (Ensures your files survive container restarts)
+      - ./db.json:/usr/src/app/db.json
+      - ./settings.json:/usr/src/app/settings.json
+    environment:
+      - PORT=3000
+    # Optional: If you want to use the .env file in the same directory:
+    env_file:
+      - .env

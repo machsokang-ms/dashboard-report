@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Summary Report System</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Google Fonts for Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Inter:wght@400;500;600;700&family=Kantumruy+Pro:wght@400;600&family=Moul&family=Suwannaphum:wght@400;700&family=Preahvihear&display=swap" rel="stylesheet">
+    
+    <!-- Material Symbols Outlined -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <img src="" alt="MoEYS Logo" id="logoImg" class="moeys-logo">
+            </div>
+            <div class="header-titles">
+                <h1 class="main-title" id="mainTitle"></h1>
+                <h2 class="sub-title" id="subTitle"></h2>
+            </div>
+        </header>
+
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <h2 class="welcome-text" id="welcomeText"></h2>
+            <div style="margin-top: 15px;">
+                <a href="/admin.html" style="color: var(--text-muted); font-size: 12px; text-decoration: none;">Admin Login</a>
+            </div>
+        </section>
+
+        <main class="dashboard-grid" id="dashboard-grid">
+            <!-- Cards will be dynamically injected here by main.js -->
+        </main>
+        
+        <!-- Footer -->
+        <footer class="app-footer" id="appFooter"></footer>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="main.js"></script>
+</body>
+</html>
