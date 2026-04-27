@@ -3,11 +3,11 @@ const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const path = require('path');
-const { readDB, writeDB, readSettings, writeSettings } = require('./database');
+const { readDB, writeDB, readSettings, writeSettings, readSlides, writeSlides } = require('./database');
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '20mb' }));
 
 // Serve static frontend files from 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -111,6 +111,71 @@ app.put('/api/platforms/:id', authenticateToken, (req, res) => {
     } else {
         res.status(404).json({ error: 'Platform not found' });
     }
+});
+
+// ---- SLIDES API ROUTES ---- //
+
+// Get all slides (Public)
+app.get('/api/slides', (req, res) => {
+    res.json(readSlides());
+});
+
+// Add a new slide (Protected)
+app.post('/api/slides', authenticateToken, (req, res) => {
+    const { tag, title, desc, icon, bgType, bgValue, imageUrl, linkUrl } = req.body;
+    if (!title) return res.status(400).json({ error: 'Missing title' });
+    const slides = readSlides();
+    const newSlide = {
+        id: Date.now().toString(),
+        tag: tag || '',
+        title,
+        desc: desc || '',
+        icon: icon || 'monitoring',
+        bgType: bgType || 'gradient',
+        bgValue: bgValue || 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #0ea5e9 100%)',
+        imageUrl: imageUrl || '',
+        linkUrl: linkUrl || ''
+    };
+    slides.push(newSlide);
+    writeSlides(slides);
+    res.json(newSlide);
+});
+
+// Update a slide (Protected)
+app.put('/api/slides/:id', authenticateToken, (req, res) => {
+    const { tag, title, desc, icon, bgType, bgValue, imageUrl, linkUrl } = req.body;
+    let slides = readSlides();
+    const index = slides.findIndex(s => s.id === req.params.id);
+    if (index === -1) return res.status(404).json({ error: 'Slide not found' });
+    slides[index] = {
+        ...slides[index],
+        tag:      tag      !== undefined ? tag      : slides[index].tag,
+        title:    title    || slides[index].title,
+        desc:     desc     !== undefined ? desc     : slides[index].desc,
+        icon:     icon     || slides[index].icon,
+        bgType:   bgType   || slides[index].bgType,
+        bgValue:  bgValue  || slides[index].bgValue,
+        imageUrl: imageUrl !== undefined ? imageUrl : slides[index].imageUrl,
+        linkUrl:  linkUrl  !== undefined ? linkUrl  : (slides[index].linkUrl || '')
+    };
+    writeSlides(slides);
+    res.json(slides[index]);
+});
+
+// Delete a slide (Protected)
+app.delete('/api/slides/:id', authenticateToken, (req, res) => {
+    let slides = readSlides();
+    slides = slides.filter(s => s.id !== req.params.id);
+    writeSlides(slides);
+    res.sendStatus(204);
+});
+
+// Reorder slides (Protected)
+app.put('/api/slides-reorder', authenticateToken, (req, res) => {
+    const { slides } = req.body;
+    if (!Array.isArray(slides)) return res.status(400).json({ error: 'Invalid data' });
+    writeSlides(slides);
+    res.json(slides);
 });
 
 // Start the server

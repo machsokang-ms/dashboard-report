@@ -89,17 +89,42 @@
         <!-- ADMIN DASHBOARD -->
         <div id="adminDashboard">
             <div class="admin-header">
-                <h2>គ្រប់គ្រងថ្នាលរបាយការណ៍ (Manage Platforms)</h2>
+                <h2>🎛️ Admin Panel</h2>
                 <div>
-                    <button class="btn-primary" onclick="openSettingsModal()" style="background: #6c757d; margin-right: 10px;">⚙️ កែប្រែ Header</button>
-                    <button class="btn-primary" onclick="openModal()">+ បន្ថែមថ្នាលថ្មី</button>
+                    <button class="btn-primary" onclick="openSettingsModal()" style="background: #6c757d; margin-right: 10px;">⚙️ Header</button>
                     <button class="btn-primary" onclick="logout()" style="background: #dc3545; margin-left: 10px;">ចាកចេញ</button>
                 </div>
             </div>
-            
-            <main class="dashboard-grid" id="admin-grid">
-                <!-- Admin view cards injected here -->
-            </main>
+
+            <!-- Admin Tabs -->
+            <div class="admin-tabs">
+                <button class="admin-tab active" id="tabPlatforms" onclick="switchTab('platforms')">
+                    <span class="material-symbols-outlined">apps</span> ថ្នាលរបាយការណ៍
+                </button>
+                <button class="admin-tab" id="tabSlides" onclick="switchTab('slides')">
+                    <span class="material-symbols-outlined">slideshow</span> Slideshow
+                </button>
+            </div>
+
+            <!-- Platform Management Panel -->
+            <div id="panelPlatforms" class="admin-panel">
+                <div style="display:flex; justify-content:flex-end; margin-bottom:16px;">
+                    <button class="btn-primary" style="width:auto;" onclick="openModal()">+ បន្ថែមថ្នាលថ្មី</button>
+                </div>
+                <main class="dashboard-grid" id="admin-grid">
+                    <!-- Admin view cards injected here -->
+                </main>
+            </div>
+
+            <!-- Slideshow Management Panel -->
+            <div id="panelSlides" class="admin-panel" style="display:none;">
+                <div style="display:flex; justify-content:flex-end; margin-bottom:16px;">
+                    <button class="btn-primary" style="width:auto;" onclick="openSlideModal()">+ បន្ថែម Slide ថ្មី</button>
+                </div>
+                <div class="slides-admin-grid" id="slides-admin-grid">
+                    <!-- Slide cards injected here -->
+                </div>
+            </div>
         </div>
 
         <!-- Footer -->
@@ -240,6 +265,122 @@
                     </select>
                 </div>
                 <button id="savePlatformBtn" class="btn-primary" onclick="addPlatform()">រក្សាទុក</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add / Edit Slide Modal -->
+    <div id="slideModal" class="modal">
+        <div class="modal-content" style="max-width:580px;">
+            <div class="modal-header">
+                <h2 id="slideModalTitle">បន្ថែម Slide ថ្មី</h2>
+                <span class="close-modal" onclick="closeSlideModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="slideId">
+
+                <!-- Background Type -->
+                <div class="form-group">
+                    <label>ប្រភេទផ្ទៃខាងក្រោយ (Background Type)</label>
+                    <div class="bg-type-toggle">
+                        <button type="button" class="bg-type-btn active" id="btnGradient" onclick="setBgType('gradient')">
+                            <span class="material-symbols-outlined">gradient</span> Gradient
+                        </button>
+                        <button type="button" class="bg-type-btn" id="btnImage" onclick="setBgType('image')">
+                            <span class="material-symbols-outlined">image</span> Upload រូបភាព
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Gradient picker -->
+                <div id="gradientSection" class="form-group">
+                    <label>ជ្រើសពណ៌ Gradient</label>
+                    <div class="gradient-presets">
+                        <button type="button" class="gradient-preset" data-gradient="linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #0ea5e9 100%)" style="background: linear-gradient(135deg, #1e3a8a, #2563eb, #0ea5e9)" onclick="selectGradient(this)"></button>
+                        <button type="button" class="gradient-preset" data-gradient="linear-gradient(135deg, #064e3b 0%, #059669 50%, #34d399 100%)" style="background: linear-gradient(135deg, #064e3b, #059669, #34d399)" onclick="selectGradient(this)"></button>
+                        <button type="button" class="gradient-preset" data-gradient="linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #a78bfa 100%)" style="background: linear-gradient(135deg, #4c1d95, #7c3aed, #a78bfa)" onclick="selectGradient(this)"></button>
+                        <button type="button" class="gradient-preset" data-gradient="linear-gradient(135deg, #7c2d12 0%, #ea580c 50%, #fb923c 100%)" style="background: linear-gradient(135deg, #7c2d12, #ea580c, #fb923c)" onclick="selectGradient(this)"></button>
+                        <button type="button" class="gradient-preset" data-gradient="linear-gradient(135deg, #831843 0%, #db2777 50%, #f472b6 100%)" style="background: linear-gradient(135deg, #831843, #db2777, #f472b6)" onclick="selectGradient(this)"></button>
+                        <button type="button" class="gradient-preset" data-gradient="linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #2dd4bf 100%)" style="background: linear-gradient(135deg, #0f766e, #0d9488, #2dd4bf)" onclick="selectGradient(this)"></button>
+                        <button type="button" class="gradient-preset" data-gradient="linear-gradient(135deg, #0c4a6e 0%, #0284c7 50%, #38bdf8 100%)" style="background: linear-gradient(135deg, #0c4a6e, #0284c7, #38bdf8)" onclick="selectGradient(this)"></button>
+                        <button type="button" class="gradient-preset" data-gradient="linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)" style="background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460)" onclick="selectGradient(this)"></button>
+                    </div>
+                    <input type="hidden" id="slideGradient" value="linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #0ea5e9 100%)">
+                </div>
+
+                <!-- Image Upload -->
+                <div id="imageSection" class="form-group" style="display:none;">
+                    <label>Upload រូបភាព (Slide Background Image)</label>
+                    <div class="image-upload-area" id="imageUploadArea" onclick="document.getElementById('slideImageFile').click()">
+                        <span class="material-symbols-outlined" style="font-size:40px;opacity:0.5;">upload_file</span>
+                        <p>ចុចដើម្បីជ្រើសរូបភាព<br><small>JPG, PNG, WebP (Max 10MB)</small></p>
+                    </div>
+                    <input type="file" id="slideImageFile" accept="image/*" style="display:none;" onchange="handleSlideImage(this)">
+                    <input type="hidden" id="slideImageData">
+                    <img id="slideImagePreview" src="" style="display:none; max-height:120px; margin-top:10px; border-radius:8px; width:100%; object-fit:cover;">
+                    <button type="button" id="clearImageBtn" style="display:none; margin-top:8px; background:transparent; border:1px solid rgba(255,255,255,0.2); color:var(--text-muted); padding:6px 12px; border-radius:6px; cursor:pointer;" onclick="clearSlideImage()">❌ លុបរូបភាព</button>
+                </div>
+
+                <!-- Live Preview -->
+                <div class="form-group">
+                    <label>Preview</label>
+                    <div class="slide-preview" id="slidePreview">
+                        <div class="slide-preview-content">
+                            <span class="slide-tag" id="previewTag">Tag</span>
+                            <h2 class="slide-title" id="previewTitle">Title</h2>
+                            <p class="slide-desc" id="previewDesc">Description</p>
+                            <span class="slide-link-badge" id="previewLinkBadge" style="display:none;">
+                                <span class="material-symbols-outlined">open_in_new</span> ចូលមើល
+                            </span>
+                        </div>
+                        <div style="opacity:0.15; font-size:60px;">
+                            <span class="material-symbols-outlined" id="previewIcon" style="font-size:60px; font-variation-settings:'FILL' 1;">monitoring</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="slideTag">Tag / Badge Label</label>
+                    <input type="text" id="slideTag" placeholder="ឧ. CDP Program..." oninput="updatePreview()">
+                </div>
+                <div class="form-group">
+                    <label for="slideTitle">ចំណងជើង Slide (Title) *</label>
+                    <input type="text" id="slideTitle" placeholder="ចំណងជើង..." required oninput="updatePreview()">
+                </div>
+                <div class="form-group">
+                    <label for="slideDesc">ការពិពណ៌នា (Description)</label>
+                    <textarea id="slideDesc" rows="2" placeholder="ពិពណ៌នា..." oninput="updatePreview()"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="slideIcon">រូបតំណាង (Icon)</label>
+                    <select id="slideIcon" onchange="updatePreview()">
+                        <option value="monitoring">Monitoring (តាមដាន)</option>
+                        <option value="bar_chart">Bar Chart (ក្រាហ្វ)</option>
+                        <option value="school">School (សាលា)</option>
+                        <option value="account_balance">Account Balance (ស្ថាប័ន)</option>
+                        <option value="analytics">Analytics (វិភាគ)</option>
+                        <option value="dashboard">Dashboard</option>
+                        <option value="description">Description (ឯកសារ)</option>
+                        <option value="apps">Apps (កម្មវិធី)</option>
+                        <option value="cast_for_education">Education (អប់រំ)</option>
+                        <option value="public">Public (សកល)</option>
+                    </select>
+                </div>
+
+                <!-- Link URL -->
+                <div class="form-group">
+                    <label for="slideLinkUrl">
+                        <span class="material-symbols-outlined" style="font-size:16px; vertical-align:middle;">link</span>
+                        តំណភ្ជាប់ (Link URL) <span style="opacity:0.5; font-size:12px;">— ស្រេចចិត្ត</span>
+                    </label>
+                    <div class="url-input-wrapper">
+                        <span class="material-symbols-outlined url-input-icon">open_in_new</span>
+                        <input type="url" id="slideLinkUrl" placeholder="https://..." oninput="updatePreview()">
+                    </div>
+                    <small style="color:var(--text-muted); margin-top:6px;">បើដាក់ URL Slide នឹងអាចចុចបានទាំងអ្សស</small>
+                </div>
+
+                <button class="btn-primary" id="saveSlideBtn" onclick="saveSlide()">💾 រក្សាទុក Slide</button>
             </div>
         </div>
     </div>

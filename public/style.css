@@ -34,10 +34,97 @@
 body {
     font-family: 'Battambang', 'Inter', sans-serif;
     background-color: var(--bg-dark);
+    background-image:
+        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(37, 99, 235, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(20, 184, 166, 0.08) 0%, transparent 60%);
     color: var(--text-main);
     min-height: 100vh;
     display: flex;
     justify-content: center;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Animated background orbs */
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    animation: floatOrb 12s ease-in-out infinite alternate;
+}
+
+body::before {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, transparent 70%);
+    top: -100px;
+    left: -100px;
+    animation-duration: 14s;
+}
+
+body::after {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 70%);
+    bottom: -80px;
+    right: -80px;
+    animation-duration: 10s;
+    animation-delay: -5s;
+}
+
+@keyframes floatOrb {
+    0%   { transform: translate(0, 0) scale(1); }
+    33%  { transform: translate(40px, 30px) scale(1.08); }
+    66%  { transform: translate(-20px, 50px) scale(0.95); }
+    100% { transform: translate(30px, -20px) scale(1.05); }
+}
+
+/* Extra orbs via .bg-orb elements */
+.bg-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+}
+
+.bg-orb-1 {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(20, 184, 166, 0.2) 0%, transparent 70%);
+    top: 40%;
+    left: 60%;
+    animation: floatOrb 16s ease-in-out infinite alternate;
+    animation-delay: -3s;
+}
+
+.bg-orb-2 {
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, transparent 70%);
+    top: 70%;
+    left: 10%;
+    animation: floatOrb 11s ease-in-out infinite alternate;
+    animation-delay: -7s;
+}
+
+/* Subtle grid overlay */
+body .grid-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, transparent 75%);
 }
 
 .app-container {
@@ -47,6 +134,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+    z-index: 1;
 }
 
 /* Header Styles */
@@ -324,3 +413,529 @@ option { background-color: var(--bg-card-dark); color: white; }
 textarea { font-family: inherit; resize: vertical; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 12px; } textarea:focus { border-color: var(--color-blue); outline: none; } .card-desc { font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); text-align: center; margin-top: 10px; padding: 0 10px; font-weight: normal; }
 
 .app-footer { text-align: center; padding-top: 30px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-size: 14px; width: 100%; }
+
+/* ========== SLIDESHOW ========== */
+.slideshow-section {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.slideshow {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+@media (min-width: 768px) {
+    .slideshow { height: 260px; }
+}
+
+/* Individual slides */
+.slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px 40px;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.6s cubic-bezier(0.4,0,0.2,1), transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    pointer-events: none;
+}
+
+.slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.slide.exit {
+    opacity: 0;
+    transform: translateX(-60px);
+}
+
+/* Slide shimmer overlay */
+.slide::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+/* Slide content */
+.slide-content {
+    flex: 1;
+    z-index: 1;
+}
+
+.slide-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.slide-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    line-height: 1.3;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+@media (min-width: 768px) {
+    .slide-title { font-size: 1.9rem; }
+}
+
+.slide-desc {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.8);
+    max-width: 480px;
+    line-height: 1.6;
+}
+
+/* Decorative icon */
+.slide-deco {
+    display: none;
+    z-index: 1;
+    margin-left: 20px;
+    opacity: 0.15;
+}
+
+@media (min-width: 768px) {
+    .slide-deco { display: block; }
+}
+
+.slide-icon {
+    font-size: 120px;
+    color: #fff;
+    line-height: 1;
+    font-variation-settings: 'FILL' 1;
+}
+
+/* Navigation arrow buttons */
+.slide-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.slide-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.slide-btn.prev { left: 14px; }
+.slide-btn.next { right: 14px; }
+
+.slide-btn .material-symbols-outlined {
+    font-size: 20px;
+}
+
+/* Dots navigation */
+.slide-dots {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s, width 0.3s;
+    padding: 0;
+}
+
+.dot.active {
+    background: #fff;
+    width: 24px;
+    border-radius: 4px;
+    transform: none;
+}
+
+/* Progress bar at bottom of slideshow */
+.slideshow::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: rgba(255,255,255,0.5);
+    animation: slideProgress 5s linear infinite;
+    z-index: 5;
+    border-radius: 0 2px 2px 0;
+}
+
+@keyframes slideProgress {
+    from { width: 0%; }
+    to { width: 100%; }
+}
+
+/* ========== ADMIN TABS ========== */
+.admin-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 0;
+}
+
+.admin-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.2s;
+    margin-bottom: -1px;
+}
+
+.admin-tab:hover { color: var(--text-main); }
+
+.admin-tab.active {
+    color: var(--text-main);
+    border-bottom-color: var(--color-blue);
+}
+
+.admin-tab .material-symbols-outlined { font-size: 18px; }
+
+.admin-panel { width: 100%; }
+
+/* ========== SLIDES ADMIN GRID ========== */
+.slides-admin-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 16px;
+    width: 100%;
+}
+
+@media (min-width: 600px) {
+    .slides-admin-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.slide-admin-card {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    height: 150px;
+    display: flex;
+    align-items: flex-end;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+}
+
+.slide-admin-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.slide-admin-card-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+}
+
+.slide-admin-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 60%);
+}
+
+.slide-admin-card-body {
+    position: relative;
+    z-index: 1;
+    padding: 12px 14px;
+    flex: 1;
+}
+
+.slide-admin-card-body .slide-tag {
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    margin-bottom: 4px;
+}
+
+.slide-admin-card-body h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.slide-admin-card-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+}
+
+.slide-action-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+}
+
+.slide-action-btn .material-symbols-outlined { font-size: 15px; }
+.slide-action-btn.edit  { background: rgba(37,99,235,0.85); color: #fff; }
+.slide-action-btn.delete { background: rgba(220,53,69,0.85); color: #fff; }
+.slide-action-btn:hover { opacity: 0.85; }
+
+.slide-order-num {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+/* ========== SLIDE MODAL EXTRAS ========== */
+.bg-type-toggle {
+    display: flex;
+    gap: 10px;
+}
+
+.bg-type-btn {
+    flex: 1;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.bg-type-btn:hover { border-color: rgba(255,255,255,0.3); color: var(--text-main); }
+
+.bg-type-btn.active {
+    background: rgba(37,99,235,0.2);
+    border-color: var(--color-blue);
+    color: var(--text-main);
+}
+
+.bg-type-btn .material-symbols-outlined { font-size: 18px; }
+
+.gradient-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.gradient-preset {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.gradient-preset:hover { transform: scale(1.1); }
+.gradient-preset.selected { border-color: #fff; box-shadow: 0 0 0 2px var(--color-blue); }
+
+.image-upload-area {
+    border: 2px dashed rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.image-upload-area:hover {
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.03);
+}
+
+.image-upload-area p { margin-top: 8px; font-size: 13px; }
+.image-upload-area small { opacity: 0.6; }
+
+/* Slide preview inside modal */
+.slide-preview {
+    height: 130px;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb, #0ea5e9);
+    transition: background 0.3s;
+    position: relative;
+}
+
+.slide-preview::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+}
+
+.slide-preview-content { z-index: 1; }
+
+/* ========== SLIDE LINK STYLES ========== */
+
+/* Clickable slide — show pointer & subtle hover overlay */
+.slide.slide-has-link {
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;        /* keep flex layout identical to div slides */
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px 40px;
+}
+
+.slide.slide-has-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.3s;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.slide.slide-has-link:hover::after {
+    background: rgba(255,255,255,0.06);
+}
+
+/* Link badge shown on slides that have a URL */
+.slide-link-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 12px;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+    transition: background 0.2s;
+}
+
+.slide-link-badge .material-symbols-outlined {
+    font-size: 14px;
+    font-variation-settings: 'FILL' 0;
+}
+
+.slide.slide-has-link:hover .slide-link-badge {
+    background: rgba(255,255,255,0.3);
+}
+
+/* Link URL icon-prefixed input in admin modal */
+.url-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.url-input-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--text-muted);
+    font-size: 18px;
+    pointer-events: none;
+}
+
+.url-input-wrapper input[type="url"] {
+    width: 100%;
+    padding-left: 40px !important;
+}
+
+/* Chain-link indicator on slide admin cards that have a URL */
+.slide-has-url-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(37,99,235,0.75);
+    backdrop-filter: blur(4px);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-top: 4px;
+}
+
+.slide-has-url-icon .material-symbols-outlined {
+    font-size: 12px;
+}
+

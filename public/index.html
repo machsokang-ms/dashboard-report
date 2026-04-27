@@ -15,6 +15,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 </head>
 <body>
+    <!-- Background Effects -->
+    <div class="grid-overlay"></div>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+
     <div class="app-container">
         <!-- Header -->
         <header class="header">
@@ -32,6 +37,13 @@
             <h2 class="welcome-text" id="welcomeText"></h2>
             <div style="margin-top: 15px;">
                 <a href="/admin.html" style="color: var(--text-muted); font-size: 12px; text-decoration: none;">Admin Login</a>
+            </div>
+        </section>
+
+        <!-- Hero Slideshow (populated dynamically by main.js from /api/slides) -->
+        <section class="slideshow-section">
+            <div class="slideshow" id="slideshow">
+                <!-- Slides are injected here by main.js -->
             </div>
         </section>
 
